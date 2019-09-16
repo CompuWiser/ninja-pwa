@@ -10,7 +10,8 @@ const assets = [
   'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js',
   'https://fonts.googleapis.com/icon?family=Material+Icons',
-  'https://fonts.gstatic.com/s/materialicons/v47/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2'
+  'https://fonts.gstatic.com/s/materialicons/v47/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',
+  './manifest.json'
 ];
 
 // install event
@@ -34,5 +35,12 @@ self.addEventListener('activate', (evt) => {
 
 // fetch event
 self.addEventListener('fetch', (evt) => {
-  console.log({ url: evt.request.url, method: evt.request.method });
+  //console.log({ url: evt.request.url, method: evt.request.method });
+
+  evt.respondWith(
+    caches
+      .match(evt.request)
+      .then((cacheRes) => cacheRes || fetch(evt.request))
+  );
+
 });
