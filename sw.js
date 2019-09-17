@@ -1,4 +1,4 @@
-let version = '6';
+let version = '10';
 const staticCacheName = 'site-static-v' + version;
 const dynamicCacheName = 'site-dynamic-v' + version;
 
@@ -17,6 +17,23 @@ const assets = [
   'https://fonts.gstatic.com/s/materialicons/v47/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2',
   './manifest.json'
 ];
+
+// cache size limit function
+const limitCacheSize = (name, size) => {
+  caches
+    .open(name)
+    .then((cache) => {
+      cache
+        .keys()
+        .then((keys) => {
+          if (keys.length > size) {
+            cache
+              .delete(keys[0])
+              .then(limitCacheSize(name, size));
+          }
+        });
+    });
+};
 
 // install event
 self.addEventListener('install', (evt) => {
@@ -64,6 +81,7 @@ self.addEventListener('fetch', (evt) => {
                   .open(dynamicCacheName)
                   .then((cache) => {
                     cache.put(evt.request.url, fetchRes.clone());
+                    limitCacheSize(dynamicCacheName, 15);
                     return fetchRes;
                   })
               )
