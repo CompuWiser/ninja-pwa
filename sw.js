@@ -1,4 +1,4 @@
-let version = '11';
+let version = '1';
 const staticCacheName = 'site-static-v' + version;
 const dynamicCacheName = 'site-dynamic-v' + version;
 
@@ -67,31 +67,30 @@ self.addEventListener('activate', (evt) => {
 
 // fetch event
 self.addEventListener('fetch', (evt) => {
-  //console.log({ url: evt.request.url, method: evt.request.method });
-/*
-  evt.respondWith(
-    caches
-      .match(evt.request)
-      .then((cacheRes) => {
-        return cacheRes ||
-          fetch(evt.request)
-            .then((fetchRes) => {
-              return (
-                caches
-                  .open(dynamicCacheName)
-                  .then((cache) => {
-                    cache.put(evt.request.url, fetchRes.clone());
-                    limitCacheSize(dynamicCacheName, 15);
-                    return fetchRes;
-                  })
-              )
-            });
-      })
-      .catch(() => {
-        if (evt.request.url.includes('.html')) {
-          return caches.match('/pages/404.html');
-        }
-      })
-  );
-*/
+  if ( !evt.request.url.includes('firestore.googleapis.com') ) {
+    evt.respondWith(
+      caches
+        .match(evt.request)
+        .then((cacheRes) => {
+          return cacheRes ||
+            fetch(evt.request)
+              .then((fetchRes) => {
+                return (
+                  caches
+                    .open(dynamicCacheName)
+                    .then((cache) => {
+                      cache.put(evt.request.url, fetchRes.clone());
+                      limitCacheSize(dynamicCacheName, 15);
+                      return fetchRes;
+                    })
+                )
+              });
+        })
+        .catch(() => {
+          if (evt.request.url.includes('.html')) {
+            return caches.match('/pages/404.html');
+          }
+        })
+    );
+  }
 });
