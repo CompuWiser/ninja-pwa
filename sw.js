@@ -1,4 +1,4 @@
-const staticCacheName = 'site-static';
+const staticCacheName = 'site-static-v2';
 const assets = [
   './',
   './index.html',
@@ -30,7 +30,18 @@ self.addEventListener('install', (evt) => {
 
 // activate event
 self.addEventListener('activate', (evt) => {
-  console.log('service worker activated');
+  //console.log('service worker activated');
+  evt.waitUntil(
+    caches
+      .keys()
+      .then((keys) => {
+        //console.log(keys);
+        let keysToDelete = keys.filter((key) => key !== staticCacheName);
+        return Promise.all(
+          keysToDelete.map((key) => caches.delete(key))
+        );
+      })
+  );
 });
 
 // fetch event
