@@ -1,4 +1,4 @@
-let version = '10';
+let version = '11';
 const staticCacheName = 'site-static-v' + version;
 const dynamicCacheName = 'site-dynamic-v' + version;
 
@@ -68,7 +68,7 @@ self.addEventListener('activate', (evt) => {
 // fetch event
 self.addEventListener('fetch', (evt) => {
   //console.log({ url: evt.request.url, method: evt.request.method });
-
+/*
   evt.respondWith(
     caches
       .match(evt.request)
@@ -93,4 +93,5 @@ self.addEventListener('fetch', (evt) => {
         }
       })
   );
+*/
 });
