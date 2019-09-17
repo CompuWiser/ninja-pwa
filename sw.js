@@ -1,5 +1,6 @@
-const staticCacheName = 'site-static-v4';
-const dynamicCacheName = 'site-dynamic-v4';
+let version = '6';
+const staticCacheName = 'site-static-v' + version;
+const dynamicCacheName = 'site-dynamic-v' + version;
 
 const assets = [
   './',
@@ -68,6 +69,10 @@ self.addEventListener('fetch', (evt) => {
               )
             });
       })
-      .catch(() => caches.match('/pages/404.html'))
+      .catch(() => {
+        if (evt.request.url.includes('.html')) {
+          return caches.match('/pages/404.html');
+        }
+      })
   );
 });
