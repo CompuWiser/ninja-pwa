@@ -23,7 +23,7 @@ db
         if (change.type === 'added') {
           renderRecipe(change.doc.data(), change.doc.id);
         } else if (change.type === 'removed') {
-          // remove the document data from the web page
+          removeRecipe(change.doc.id);
         }
       });
   });
@@ -47,3 +47,13 @@ form.addEventListener('submit', (evt) => {
   form.title.value = '';
   form.ingredients.value = '';
 });
+
+// remove a recipe
+const recipeContainer = document.querySelector('.recipes');
+recipeContainer.addEventListener('click', (evt) => {
+  if (evt.target.tagName === 'I') {
+    const id = evt.target.getAttribute('data-id');
+    //console.log(id);
+    db.collection('recipes').doc(id).delete();
+  }
+})
